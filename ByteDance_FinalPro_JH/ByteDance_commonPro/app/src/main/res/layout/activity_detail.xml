@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bottom_bar_background"
+    android:id="@+id/root_container">
+
+    <!-- 背景视图，固定在屏幕最底层，不随内容移动 -->
+    <ImageView
+        android:id="@+id/background_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bottom_bar_background"
+        android:scaleType="centerCrop"
+        android:alpha="0.0" />
+
+    <!-- 内容容器，用于转场动画，这个会移动和缩放 -->
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/content_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:alpha="0">
+
+            <!-- 顶部作者区 -->
+            <LinearLayout
+                android:id="@+id/top_author_area"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:gravity="center_vertical"
+                android:background="@color/bottom_bar_background">
+
+                <ImageView
+                    android:id="@+id/iv_btn_back"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/detail_back"
+                    android:layout_marginEnd="16dp" />
+
+                <ImageView
+                    android:id="@+id/iv_author_avatar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp" />
+
+                <TextView
+                    android:id="@+id/tv_author_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/bottom_bar_item_color" />
+
+                <TextView
+                    android:id="@+id/tv_btn_follow"
+                    android:layout_width="60dp"
+                    android:layout_height="28dp"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:background="@drawable/btn_follow"
+                    android:text="关注"
+                    android:textColor="@color/red" />
+
+            </LinearLayout>
+
+            <!-- 图片区域 -->
+            <RelativeLayout
+                android:id="@+id/image_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:transitionName="image_transition"/>
+
+                <!-- ViewPager全局加载状态 -->
+                <LinearLayout
+                    android:id="@+id/viewpager_global_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:background="@color/bottom_bar_background">
+
+                    <ProgressBar
+                        android:id="@+id/global_loading_progress"
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:id="@+id/global_loading_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="加载中..."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_gray"
+                        android:layout_marginTop="16dp"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
+
+                <!-- ViewPager全局错误状态 -->
+                <LinearLayout
+                    android:id="@+id/viewpager_global_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:background="@color/bottom_bar_background"
+                    android:padding="32dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_error"
+                        android:layout_gravity="center_horizontal" />
+
+                    <TextView
+                        android:id="@+id/global_error_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="加载失败"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_gray"
+                        android:layout_marginTop="16dp"
+                        android:layout_gravity="center_horizontal" />
+
+                    <Button
+                        android:id="@+id/global_retry_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="重试"
+                        android:layout_marginTop="24dp"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingHorizontal="24dp"
+                        android:background="@drawable/bg_retry_button" />
+                </LinearLayout>
+
+                <!-- 进度条 -->
+                <LinearLayout
+                    android:id="@+id/progress_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:visibility="gone" />
+
+                <!-- 静音按钮 -->
+                <ImageView
+                    android:id="@+id/iv_mute"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/ic_unmute"
+                    android:background="@drawable/bg_mute_button"
+                    android:padding="8dp" />
+
+            </RelativeLayout>
+
+            <ScrollView
+                android:id="@+id/content_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:id="@+id/content_touch_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/detail_tv_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textColor="@color/bottom_bar_item_color"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:id="@+id/detail_tv_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/bottom_bar_item_color"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:id="@+id/detail_tv_create_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_gray" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="@android:color/transparent" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- 底部交互区 -->
+            <LinearLayout
+                android:id="@+id/bottom_interaction_area"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:gravity="center_vertical"
+                android:background="@color/bottom_bar_background">
+
+                <!-- 快捷评论框 -->
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_comment_edit"
+                    android:hint="说点什么..."
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp" />
+
+                <!-- 点赞 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="16dp">
+
+                    <ImageView
+                        android:id="@+id/detail_iv_like"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_like" />
+
+                    <TextView
+                        android:id="@+id/detail_tv_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+                <!-- 评论 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="16dp">
+
+                    <ImageView
+                        android:id="@+id/iv_comment"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_comment" />
+
+                    <TextView
+                        android:id="@+id/tv_comment_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+                <!-- 收藏 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="16dp">
+
+                    <ImageView
+                        android:id="@+id/iv_collect"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_collect" />
+
+                    <TextView
+                        android:id="@+id/tv_collect_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+                <!-- 分享 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="16dp">
+
+                    <ImageView
+                        android:id="@+id/iv_share"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_share" />
+
+                    <TextView
+                        android:id="@+id/tv_share_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

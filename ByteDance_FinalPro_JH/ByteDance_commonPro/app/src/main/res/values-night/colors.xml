@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bottom_bar_background">#121212</color>   <!-- 深灰背景 -->
+    <color name="bottom_bar_item_color">#FFFFFF</color>   <!-- 白色文字/图标 -->
+
+    <color name="bg_comment_edit_color">#464648</color>
+
+    <color name="bottom_navigation_unselected_color">#464648</color>
+    <color name="bottom_navigation_selected_color">#E6E6E9</color>
+</resources>
